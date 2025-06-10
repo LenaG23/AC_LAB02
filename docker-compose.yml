@@ -1,0 +1,16 @@
+# version: "3.8"  ← opțional, poate fi eliminat
+
+services:
+  backend:
+    build:
+      context: ./sneakers-back
+    ports:
+      - "5002:5002"
+    env_file:
+      - ./sneakers-back/.env
+
+  frontend:
+    build:
+      context: ./SneakersR
+    ports:
+      - "3000:3000"

@@ -1,0 +1,40 @@
+steps:
+  # === Build frontend ===
+  - name: "gcr.io/cloud-builders/docker"
+    dir: "SneakersR"
+    args:
+      [
+        "build",
+        "-t",
+        "europe-central2-docker.pkg.dev/rancher-pj-462500/app-repo/frontend:latest",
+        ".",
+      ]
+
+  # === Push frontend ===
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "europe-central2-docker.pkg.dev/rancher-pj-462500/app-repo/frontend:latest",
+      ]
+
+  # === Deploy frontend in Cloud Run ===
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - frontend-app
+      - --image
+      - europe-central2-docker.pkg.dev/rancher-pj-462500/app-repo/frontend:latest
+      - --region
+      - europe-central2
+      - --platform
+      - managed
+      - --allow-unauthenticated
+
+images:
+  - europe-central2-docker.pkg.dev/rancher-pj-462500/app-repo/frontend:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
